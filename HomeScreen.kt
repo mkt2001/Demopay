@@ -223,7 +223,7 @@ fun HomeScreen(
         AlertDialog(
             onDismissRequest = { confirmReset = false },
             title = { Text("Reset demo data?") },
-            text = { x },
+            text = { Text("All demo account balances go back to their starting amounts and the demo history is cleared.") },
             confirmButton = {
                 TextButton(onClick = { state.resetDemo(); confirmReset = false }) { Text("Reset") }
             },
