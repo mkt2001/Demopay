@@ -68,7 +68,7 @@ private fun fit(text: String, p: Paint, maxW: Float): String {
     return t + "..."
 }
 
-/** Draws the receipt image. DEMO marks are part of the picture itself (big tiled watermark + banners). */
+/** Draws the receipt image. DEMO marks are part of the picture itself (watermark behind the text + badge + footer). */
 fun buildReceiptBitmap(txn: Txn): Bitmap {
     val w = 1080
     val h = 1700
@@ -76,6 +76,24 @@ fun buildReceiptBitmap(txn: Txn): Bitmap {
     val c = Canvas(bmp)
     c.drawColor(WHITE)
     val cx = w / 2f
+
+    // light DEMO watermark across the whole image, drawn BEHIND the text so the text stays crisp
+    val wm = paint(GREEN, 84f, true, Paint.Align.CENTER)
+    wm.alpha = 38
+    c.save()
+    c.rotate(-30f, cx, h / 2f)
+    var row = 0
+    var yy = -600f
+    while (yy < h + 600f) {
+        var xx = -700f + (if (row % 2 == 0) 0f else 180f)
+        while (xx < w + 700f) {
+            c.drawText("DEMO", xx, yy, wm)
+            xx += 360f
+        }
+        yy += 150f
+        row++
+    }
+    c.restore()
 
     // big green tick
     val ring = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -98,11 +116,18 @@ fun buildReceiptBitmap(txn: Txn): Bitmap {
 
     c.drawText("Payment Complete", cx, 520f, paint(GREEN, 74f, true, Paint.Align.CENTER))
 
-    // DEMO pill
+    // DEMO badge (outlined pill with a small dot)
+    val badgeRect = RectF(230f, 565f, 850f, 629f)
     val pillFill = Paint(Paint.ANTI_ALIAS_FLAG)
     pillFill.color = LIGHT_GREEN
-    c.drawRoundRect(RectF(120f, 560f, 960f, 640f), 40f, 40f, pillFill)
-    c.drawText(DEMO_TEXT, cx, 614f, paint(GREEN, 40f, true, Paint.Align.CENTER))
+    c.drawRoundRect(badgeRect, 32f, 32f, pillFill)
+    val pillLine = Paint(Paint.ANTI_ALIAS_FLAG)
+    pillLine.color = GREEN
+    pillLine.style = Paint.Style.STROKE
+    pillLine.strokeWidth = 3f
+    c.drawRoundRect(badgeRect, 32f, 32f, pillLine)
+    c.drawCircle(262f, 597f, 7f, disc)
+    c.drawText(DEMO_TEXT, cx + 12f, 607f, paint(GREEN, 31f, true, Paint.Align.CENTER))
 
     c.drawText(formatMoney(txn.amountPaise), cx, 790f, paint(INK, 130f, true, Paint.Align.CENTER))
     val namePaint = paint(INK, 48f, true, Paint.Align.CENTER)
@@ -130,29 +155,11 @@ fun buildReceiptBitmap(txn: Txn): Bitmap {
         y += 105f
     }
 
-    // footer banner
-    val footer = Paint()
+    // footer: slim rounded green bar
+    val footer = Paint(Paint.ANTI_ALIAS_FLAG)
     footer.color = GREEN
-    c.drawRect(0f, 1570f, w.toFloat(), h.toFloat(), footer)
-    c.drawText("NO REAL MONEY WAS TRANSFERRED", cx, 1650f, paint(WHITE, 38f, true, Paint.Align.CENTER))
-
-    // tiled diagonal watermark over everything
-    val wm = paint(GREEN, 62f, true, Paint.Align.LEFT)
-    wm.alpha = 52
-    c.save()
-    c.rotate(-30f, cx, h / 2f)
-    var row = 0
-    var yy = -500f
-    while (yy < h + 500f) {
-        var xx = -600f + (if (row % 2 == 0) 0f else 330f)
-        while (xx < w + 600f) {
-            c.drawText(DEMO_TEXT, xx, yy, wm)
-            xx += 860f
-        }
-        yy += 170f
-        row++
-    }
-    c.restore()
+    c.drawRoundRect(RectF(60f, 1600f, w - 60f, 1672f), 36f, 36f, footer)
+    c.drawText("NO REAL MONEY WAS TRANSFERRED", cx, 1646f, paint(WHITE, 31f, true, Paint.Align.CENTER))
     return bmp
 }
 

@@ -93,23 +93,25 @@ fun Avatar(name: String, color: Color, size: Dp = 44.dp) {
     }
 }
 
-/** Faint repeated DEMO text drawn over a screen so receipts cannot pass as real. */
+/** Light repeated DEMO words drawn behind a screen so it can never pass as a real payment screen. */
 @Composable
 fun Watermark() {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceEvenly,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            repeat(6) {
-                Text(
-                    DEMO_TEXT,
-                    modifier = Modifier.rotate(-25f),
-                    color = DemoGreen.copy(alpha = 0.16f),
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 24.sp
-                )
+    Column(
+        Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        repeat(8) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                repeat(2) {
+                    Text(
+                        "DEMO",
+                        modifier = Modifier.rotate(-25f),
+                        color = DemoGreen.copy(alpha = 0.13f),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 34.sp
+                    )
+                }
             }
         }
     }

@@ -235,6 +235,7 @@ fun SuccessScreen(txn: Txn, onReceipt: () -> Unit, onDone: () -> Unit) {
     )
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Watermark()
         Column(
             Modifier
                 .fillMaxSize()
@@ -313,6 +314,5 @@ fun SuccessScreen(txn: Txn, onReceipt: () -> Unit, onDone: () -> Unit) {
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp).height(52.dp)
             ) { Text("Done") }
         }
-        Watermark()
     }
 }
